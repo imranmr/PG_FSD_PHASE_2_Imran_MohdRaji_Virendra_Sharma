@@ -10,73 +10,47 @@
 <meta charset="ISO-8859-1">
 <title>Insert title here</title>
 </head>
-<body>
-	<h2>Checking login</h2>
-	<br>
-	<p>Connecting to database</p>
-	<jsp:useBean id="login" class="com.java.programs.Login" scope="request"/>
-	<jsp:setProperty property="*" name="login"/>
-	
-	
-	
+<body>	
 	<sql:setDataSource var="db" driver="com.mysql.cj.jdbc.Driver"
 		url="jdbc:mysql://localhost:3306/phase2project" user="root"
 		password="root" />
-
-	<sql:query dataSource="${db}" var="rs">  
-		SELECT * from login;  
-		</sql:query>
-	<p>Printing out data in login table</p>	<br>
-	<table border="2" width="100%">
-		<tr>
-			<th>Login</th>
-			<th>Password</th>
-		</tr>
-		<c:forEach var="table" items="${rs.rows}">
-			<tr>
-				<td><c:out value="${table.username}" /></td>
-				<td><c:out value="${table.password}" /></td>
-
-			</tr>
-		</c:forEach>
-	</table>
-	
-	<p>Adding login details to login table - might be commented</p>
-	<jsp:getProperty property="username" name="login"/><br>
-	<jsp:getProperty property="password" name="login"/><br>
-	
-	<c:set var="username" scope="session" value="${param.username}"/>
-	<c:set var="password" scope="session" value="${param.password}"/>
-	<c:out value="${username}"/>
-	<c:out value="${password}"/>
-	<%-- 
-	<sql:update dataSource="${db}" var="count">  
-	INSERT INTO login VALUES ("${username}","${password}");  
-	</sql:update> 
-	--%>
+		
+	<%-- New Account --%>
+	<c:if test="${'newaccount'==param.logincreation}">
+		<sql:update dataSource="${db}" var="count">  
+		INSERT INTO login VALUES ("${param.username}","${param.password}");  
+		</sql:update>
+		<c:redirect url="/flightsearch.jsp"/>
+	</c:if>	
 	
 	
-	<br>
-	<p>Getting updated list </p>
-	<br>
-	<sql:query dataSource="${db}" var="rs">  
-		SELECT * from login;  
-		</sql:query>
-	<p>Printing out data in login table</p>	<br>
-	<table border="2" width="100%">
-		<tr>
-			<th>Login</th>
-			<th>Password</th>
-		</tr>
-		<c:forEach var="table" items="${rs.rows}">
-			<tr>
-				<td><c:out value="${table.username}" /></td>
-				<td><c:out value="${table.password}" /></td>
-
-			</tr>
-		</c:forEach>
-	</table>
+	<%-- Admin Account --%>	
+	<c:if test="${param.username=='admin'}">
+		<sql:query dataSource ="${db}" var="result">select * from login where username="${param.username}" and password="${param.password}";</sql:query>
+		<c:if test="${param.password==result.rows[0].password}">
+			<c:redirect url="/adminlogin.jsp"/>
+		</c:if>
+	</c:if>
 	
+	<%-- Account --%>
+	<sql:query dataSource ="${db}" var="result">select * from login where username="${param.username}" and password="${param.password}";</sql:query>
+	<c:if test="${result.rowCount >0}">
+		<c:set var="username" scope="session" value="${param.username}" />
+		<c:redirect url="/flightsearch.jsp"/>
+	</c:if>
+	
+	
+	<c:if test="${result.rowCount==0}">
+		<p>Account does not exist! </p>
+		<p>Create Account?</p>
+		<form action="login.jsp">
+			<label for="username">Enter Username:</label>
+			<input type="text" placeholder="Enter Username:" name="username" id="username"> <br>
+			<label for="password">Enter Password</label>
+			<input type="password" placeholder="Enter password:" name="password" id="password"> <br>
+			<button type="submit" name="logincreation" value="newaccount">Create Login</button>
+		</form>
+	</c:if>
 	
 </body>
 </html>
