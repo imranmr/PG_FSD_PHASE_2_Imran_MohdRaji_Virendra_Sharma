@@ -8,5 +8,10 @@
 </head>
 <body>
 <h1>Successfully purchased ticket</h1>
+Ticket Details:<br>
+	Source: "${sourceset}"<br>
+	Destination: "${destinationset}"<br>
+	Date: "${dateset}"<br>
+	Seats: "${seatsset}"
 </body>
 </html>

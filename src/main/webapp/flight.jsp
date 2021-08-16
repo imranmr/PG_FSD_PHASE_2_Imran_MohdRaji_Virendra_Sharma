@@ -15,11 +15,14 @@
 <sql:setDataSource var="db" driver="com.mysql.cj.jdbc.Driver"
 		url="jdbc:mysql://localhost:3306/phase2project" user="root"
 		password="root" />
-<h1>Flight Page</h1>
+<h1>Flights</h1>
 
-<sql:query dataSource="${db}" var="ds">SELECT * from flight where source_city="${param.source}" AND destination_city="${param.destination}" AND ;
+<sql:query dataSource="${db}" var="ds">SELECT * from flight where source_city="${param.source}" AND destination_city="${param.destination}" AND dateoftravel="${param.dateoftravel}" AND (total_seats-(booked_seats+${param.numpersons}))>0;
+	
 	</sql:query>
-	<h3>Printing out data in flight table</h3>
+	
+	
+	<h3>Available flights:</h3>
 	<table border="2" width="100%">
 		<tr>
 			<th>Airline Name</th>
@@ -29,8 +32,7 @@
 			<th>Destination</th>
 			<th>Departure Time</th>
 			<th>Arrival Time</th>
-			<th>Total Seats</th>
-			<th>Booked Seats</th>
+			<th>Available Seats</th>
 			<th>Date of Travel</th>
 			<th>Flight Class</th>
 		</tr>
@@ -43,17 +45,26 @@
 				<td><c:out value="${table1.destination_city}" /></td>
 				<td><c:out value="${table1.departuretime_fromsource}" /></td>
 				<td><c:out value="${table1.arrivaltime_fromdestination}" /></td>
-				<td><c:out value="${table1.total_seats}" /></td>
-				<td><c:out value="${table1.booked_seats}" /></td>
+				<td><c:out value="${table1.total_seats - table1.booked_seats}" /></td>
 				<td><c:out value="${table1.dateoftravel}" /></td>
 				<td><c:out value="${table1.flight_class}" /></td>
 			</tr>
 		</c:forEach>
 	</table>
 	<br>
+	<c:set var="seats" value="${param.numpersons + ds.rows[0].booked_seats}" scope="session"/>
+	<c:set var="sourceset" value="${param.source}" scope="session"/>
+	<c:set var="destinationset" value="${param.destination}" scope="session"/>
+	<c:set var="dateset" value="${param.dateoftravel}" scope="session"/>
+	<c:set var="seatsset" value="${param.numpersons}" scope="session"/>
+	
 	<form action="register.jsp">
-		<label for="flightbuy">Enter Flight Number to checkout:</label><br>
-		<input type="number" placeholder="Enter Flight Number:" name="flightbuy" id="flightbuy">
+		<label for="flightbuy">Select Flight Number:</label>
+		<select id="flightbuy" name="flightbuy">
+		<c:forEach var="flightlst" items="${ds.rows}">
+			<option value="${flightlst.flight_number}">${flightlst.flight_number}</option>
+		</c:forEach>
+		</select>
 		<button type="submit" name="flightsubmit" value="buy">Buy Flight</button>
 	</form>
 

@@ -286,8 +286,8 @@
 	</form>
 	<br>
 	<form action="adminlogin.jsp">
-		<label for="emaildelete">Enter Email:</label> 
-		<input type="text" placeholder="Delete Email:" name="emaildelete" id="emaildelete"> <br> 
+		<label for="emaildelete">Enter username:</label> 
+		<input type="text" placeholder="Delete username:" name="emaildelete" id="emaildelete"> <br> 
 		<button type="submit" name="register_submit" value="delete">Delete Register</button>
 	</form>
 			
@@ -295,9 +295,9 @@
 	<c:if test="${'add'==param.booking_submit}">
 		<c:set var="usernamebooking" value="${param.usernamebooking}"/>
 		<c:set var="flight_numberbooking" value="${param.flight_numberbooking}"/>
-		
+		<c:set var="seats" value="${param.seats}"/>
 		<sql:update dataSource="${db}" var="count">  
-			INSERT INTO booking (username, flight_number) VALUES ("${usernamebooking}",${flight_numberbooking});    
+			INSERT INTO booking (username, flight_number,seats) VALUES ("${usernamebooking}",${flight_numberbooking},${seats});    
 		</sql:update>
 	</c:if>
 	
@@ -312,12 +312,13 @@
 	
 	<sql:query dataSource="${db}" var="as">SELECT * from booking;
 	</sql:query>
-	<h3>Register Table:</h3>
+	<h3>Booking Table:</h3>
 	<table border="2" width="100%">
 		<tr>
 			<th>Username</th>
 			<th>Flight Number</th>
 			<th>Booking ID</th>
+			<th>Seats</th>
 
 		</tr>
 		<c:forEach var="table" items="${as.rows}">
@@ -325,6 +326,7 @@
 				<td><c:out value="${table.username}" /></td>
 				<td><c:out value="${table.flight_number}" /></td>
 				<td><c:out value="${table.booking_id}" /></td>
+				<td><c:out value="${table.seats}" /></td>
 			</tr>
 		</c:forEach>
 	</table>
@@ -337,6 +339,9 @@
 			<label for="flight_numberbooking">Enter flight number:</label> 
 			<input type="number" placeholder="Enter flight number:" name="flight_numberbooking" id="flight_numberbooking"> <br> 
 			
+			<label for="seats">Enter seats number:</label> 
+			<input type="number" placeholder="Enter seats number:" name="seats" id="seats"> <br>
+			 
 			<button type="submit" name="booking_submit" value="add">Add Booking</button>
 	</form>
 	<br>

@@ -19,20 +19,19 @@
 <sql:query dataSource="${db}" var="ds">SELECT * from flight where flight_number=${param.flightbuy};</sql:query>
 <c:set var="flightbuy" value="${param.flightbuy}" scope="session"/>
 
-<H1>Register Page</H1>
+<H1>Registeration</H1>
 <p>Selected Flight:</p>
 
 	<table border="2" width="100%">
 		<tr>
 			<th>Airline Name</th>
-			<th>Price</th>
+			<th>Price ($)</th>
 			<th>Flight Number</th>
 			<th>Source</th>
 			<th>Destination</th>
 			<th>Departure Time</th>
 			<th>Arrival Time</th>
-			<th>Total Seats</th>
-			<th>Booked Seats</th>
+			<th>Available Seats</th>
 			<th>Date of Travel</th>
 			<th>Flight Class</th>
 		</tr>
@@ -45,15 +44,20 @@
 				<td><c:out value="${table1.destination_city}" /></td>
 				<td><c:out value="${table1.departuretime_fromsource}" /></td>
 				<td><c:out value="${table1.arrivaltime_fromdestination}" /></td>
-				<td><c:out value="${table1.total_seats}" /></td>
-				<td><c:out value="${table1.booked_seats}" /></td>
+				<td><c:out value="${table1.total_seats - table1.booked_seats}" /></td>
 				<td><c:out value="${table1.dateoftravel}" /></td>
 				<td><c:out value="${table1.flight_class}" /></td>
 			</tr>
 		</c:forEach>
 	</table>
-
-
+	<br>
+	Searched:<br>
+	Source: "${sourceset}"<br>
+	Destination: "${destinationset}"<br>
+	Date: "${dateset}"<br>
+	Seats: "${seatsset}"
+	
+	<br>
 	<form action="buypage.jsp">
 		<h4>Please enter your registration details below:</h4>
 		<label for="full_name">Full Name:</label><br>
@@ -77,9 +81,20 @@
 		<label for="passport">Passport:</label><br>
 		<input type="text" placeholder="Enter passport:" name="passport" id="passport"><br><br>
 		
-		<button type="submit" name="register_submit" value="add">Register</button>
+		<p> Enter Credit Card Information: </p>
+		<label for="carnumber">Enter Card Number:</label><br>
+		<input type="number" placeholder="Enter Card Number" name="creditcardnumber" id="cardnumber"/>
+		<br>
+		<label for="securitypin">Enter Security Pin:</label><br>
+		<input type="number" placeholder="Enter Security Pin" name="securitypinnumber" id="securitypin"/>
+		<br>
+		<label for="expirationdate">Enter Card Expiration Date:</label><br>
+		<input type="date" placeholder="Enter Card Expiration Date" name="expirationdate" id="expirationdate"/>
+		<br><br>
+		<button type="submit" name="register_submit" value="add">Buy Ticket</button>
 	</form>
-
+	
+	
 
 </body>
 </html>
