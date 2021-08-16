@@ -19,7 +19,7 @@
 <sql:query dataSource="${db}" var="ds">SELECT * from flight where flight_number=${param.flightbuy};</sql:query>
 <c:set var="flightbuy" value="${param.flightbuy}" scope="session"/>
 
-<H1>Registeration</H1>
+<H1>Registration</H1>
 <p>Selected Flight:</p>
 
 	<table border="2" width="100%">
